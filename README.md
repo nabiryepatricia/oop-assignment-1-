@@ -51,13 +51,13 @@ All randomness uses `np.random.default_rng(seed)` with the seed written in the n
 
 ## Summary of findings
 
-**1. Population forecaster.** Wakiso grows fastest (CAGR 6.47% a year); Kampala and Gulu tie at 4.61%. Trained on 2015-2021 and tested on 2022-2024, the exponential (CAGR) model beat the linear trend in all five districts (test MAPE 0.4-3.3% versus 2.2-4.0%), while the Fibonacci-ratio model was 36-47% wrong and is not defensible for human populations. The forecasts imply about 4,700 additional primary classrooms across the five districts by 2029 (assumptions in the notebook). Bootstrap 95% intervals are narrow (about +/-1-5%) and optimistic.
+**1. Population forecaster.** Wakiso grows fastest at an average rate of 6.47%  per year; Kampala and Gulu tie at 4.61%. Trained on 2015-2021 and tested on 2022-2024, the exponential annual growth rate  model beat the linear trend in all five districts (test MAPE 0.4-3.3% versus 2.2-4.0%), while the Fibonacci-ratio model was 36-47% wrong and is not defensible for human populations. The forecasts imply about 4,700 additional primary classrooms across the five districts by 2029 (assumptions in the notebook). Bootstrap 95% intervals are narrow (about +/-1-5%) and optimistic.
 
-**2. Solar micro-grid.** The system 3x+2y=D1, 4x+y=D2 is well-posed (det = -5, condition number about 5.8). A +/-5% demand error moves the dispatch by up to about 21%. A single vectorised `scipy.linalg.solve` call is about 28 times faster than a loop over 30 days. Two of 30 days (both Sundays) are infeasible; NNLS leaves less unmet demand than clipping. The battery is the more volatile source (CV 0.45 versus 0.28) and drives about 87% of the roughly UGX 299,000 monthly cost.
+**2. Solar micro-grid.** The system 3x+2y=D1, 4x+y=D2 is well-posed (det = -5, condition number about 5.8). A +/-5% demand error moves the dispatch by up to about 21%. A single vectorised `scipy.linalg.solve` call is about 28 times faster than a loop over 30 days. Two of 30 days including Sundays are not feasible; NNLS leaves less unmet demand than clipping. The battery is the more volatile source (CV 0.45 versus 0.28) and drives about 87% of the roughly UGX 299,000 monthly cost.
 
 **3. Fish stock and export risk.** With r = 0.4 and K = 10,000 t, the stock settles at K(1 - h/r). Maximum sustainable yield (rK/4 = 1,000 t per week) is reached at h = 0.20; h = 0.30 overfishes and earns about 17% less revenue. Annual-revenue CV is about 0.10-0.11 in every scenario ("Moderate") and the 5% VaR is about 15-17% of expected revenue. A raw variance threshold such as 50,000 is unit-dependent and meaningless; the coefficient of variation is not. A CV rule sees only price risk, so sustainability is judged separately by comparing h with r/2.
 
-**4. Rainfall and crops.** Maize has a four-month suitable window only in Gulu; Mbarara's beans have two (Mar-May, Sep-Dec). A correct NumPy cosine similarity matches `scipy.spatial.distance.cosine`; cosine hides differences in amount and timing, which Euclidean distance and Pearson correlation reveal. `find_peaks` recovers the published unimodal (Gulu) and bimodal (Mbarara) regimes but calls the illustrative Kampala series unimodal; no single threshold fixes that. Crop windows are sensitive to the thresholds, and monthly averages hide year-to-year variability.
+**4. Rainfall and crops.** Maize has a four-month suitable window only in Gulu; Mbarara's beans have two (March-May, September-December). A correct NumPy cosine similarity matches `scipy.spatial.distance.cosine`; cosine hides differences in amount and timing, which Euclidean distance and Pearson correlation reveal. `find_peaks` recovers the published unimodal (Gulu) and bimodal (Mbarara) regimes but calls the illustrative Kampala series unimodal; no single threshold fixes that. Crop windows are sensitive to the thresholds, and monthly averages hide year-to-year variability.
 
 **5. Taxi routes.** The equilibrium Ntinda fare is UGX 2,200 (76 passengers per trip-hour), so the current UGX 2,000 fare is about 9% below it, with a shortage of 10 passengers per trip-hour. In walk-forward backtesting, exponential smoothing beat the 3-day moving average and the linear trend, but the tuned alpha was 1.0 (i.e. "tomorrow equals today"), so smoothing adds nothing on these short series. Each route needs one vehicle on day 11 (utilisation 40-57%). On simulated weekly data, a seasonal-naive forecaster cut the moving average's error by about 60%.
 
@@ -74,8 +74,8 @@ Every project has unit tests covering normal cases (checked against hand calcula
 
 ## Data and sources
 
-* All data are illustrative unless stated. The **Mbarara and Jinja** population series (Project 1) are invented; the three Project 5 route series other than Ntinda are illustrative; the Project 2 demand file and the Project 4 multi-year rainfall (extension) are **synthetic** and seeded.
-* Crop thresholds (Project 4) are derived from FAO crop-information pages, FAO agro-ecological zone tables, the Uganda Coffee Development Authority's coffee profiles and Nakyagaba et al. (2024); regional climate regimes are checked against Kisembe et al. (2018). Full references are at the top of `project4_rainfall.ipynb`.
+* All data are illustrative unless stated. The **Mbarara and Jinja** population series  for Project 1 are invented; the three Project 5 route series other than Ntinda are illustrative; the Project 2 demand file and the Project 4 multi-year rainfall (extension) are **synthetic** and seeded.
+* Crop thresholds  for Project 4 are derived from FAO crop-information pages, FAO agro-ecological zone tables, the Uganda Coffee Development Authority's coffee profiles and Nakyagaba et al. (2024); regional climate regimes are checked against Kisembe et al. (2018). Full references are at the top of `project4_rainfall.ipynb`.
 
 ## Known limitations
 
@@ -87,14 +87,10 @@ Every project has unit tests covering normal cases (checked against hand calcula
 
 > **DRAFT: edit this so that it is true for you.** The assignment requires an honest declaration, and you may be asked to explain any line of code in a viva. Replace every [bracketed] part.
 
-I used an AI assistant (Claude, from Anthropic) while completing this assignment. It was used to:
+I used an AI assistant (Claude) while completing this assignment. It was used to:
 
 * draft the Python modules in `src/`, the `pytest` tests, the notebook text and this README;
 * look up published sources for the crop thresholds and climate regimes in Project 4;
 * run the code and tests and flag problems.
 
-What I did myself: [for example: read and ran every module and notebook; changed ...; rewrote the "Findings & Limitations" sections in my own words; checked at least N results by hand, such as the equilibrium fare 2,200 and det(A) = -5; ran `pytest` and Restart & Run All on my own machine].
 
-Where I corrected or questioned the AI's work: [for example: ...].
-
-I understand the code well enough to explain it: [list any parts you still need to study before the viva].
